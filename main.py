@@ -56,6 +56,7 @@ if GPU_IN_USE:
     cudnn.benchmark = True
 
 optimizer = optim.Adam(Net.parameters(), lr=args.lr)  # Adam optimization
+scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[75, 150], gamma=0.5)  # lr decay
 loss_function = nn.CrossEntropyLoss()
 
 
@@ -129,6 +130,7 @@ def test():
 
 
 for epoch in range(0, EPOCH):
+    scheduler.step()
     print("\n\n epoch : %d/200" % (epoch + 1))
     print(train())
     print(test())
