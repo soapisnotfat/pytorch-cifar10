@@ -10,12 +10,14 @@ import argparse
 from models import *
 from utils import progress_bar
 
+# ===========================================================
 # Global variables
-EPOCH = 200
-BATCH_SIZE = 100
+# ===========================================================
+EPOCH = 200  # number of times for each run-through
+BATCH_SIZE = 100  # number of images for each epoch
 ACCURACY = 0  # overall prediction accuracy
 GPU_IN_USE = torch.cuda.is_available()  # whether using GPU
-CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')  # 10 classes containing in CIFAR-10 dataset
 
 
 # ===========================================================
@@ -26,10 +28,7 @@ parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
 parser.add_argument('--epoch', default=EPOCH, type=int)
 args = parser.parse_args()
 
-train_transform = transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor()
-])  # dataset training transform
+train_transform = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.ToTensor()])  # dataset training transform
 
 test_transform = transforms.Compose([transforms.ToTensor()])  # dataset testing transform
 
@@ -49,7 +48,18 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=BATCH
 # Prepare model
 # ===========================================================
 print("***** prepare model *****\n")
-Net = VGG('VGG11')
+# Net = AlexNet()
+
+# Net = VGG('VGG11')
+# Net = VGG('VGG13')
+# Net = VGG('VGG16')
+# Net = VGG('VGG19')
+
+Net = resnet18()
+# Net = resnet34()
+# Net = resnet50()
+# Net = resnet101()
+# Net = resnet152()
 
 if GPU_IN_USE:
     Net.cuda()
@@ -78,7 +88,7 @@ def train():
     for batch_num, (data, target) in enumerate(train_loader):
         if GPU_IN_USE:
             data, target = data.cuda(), target.cuda()
-        data, target = Variable(data), Variable(target)
+        data, target = Variable(data), Variable(target)  # set up GPU Tensor
         optimizer.zero_grad()
         output = Net(data)
         loss = loss_function(output, target)
@@ -86,9 +96,9 @@ def train():
         optimizer.step()
         train_loss += loss.data[0]
         # TODO: introduce torch.max in blog
-        prediction = torch.max(output.data, 1)  # second param "1" represent the dimension to reduce
+        prediction = torch.max(output.data, 1)  # second param "1" represents the dimension to reduce
         total += target.size(0)
-        train_correct += prediction[1].eq(target.data).cpu().sum()
+        train_correct += prediction[1].eq(target.data).cpu().sum()  # train_correct incremented by one if predicted right
 
         progress_bar(batch_num, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                      % (train_loss / (batch_num + 1), 100. * train_correct / total, train_correct, total))
@@ -114,10 +124,9 @@ def test():
     for batch_num, (data, target) in enumerate(test_loader):
         if GPU_IN_USE:
             data, target = data.cuda(), target.cuda()
-        data, target = Variable(data, volatile=True), Variable(target)
+        data, target = Variable(data, volatile=True), Variable(target)  # set up GPU Tensor
         output = Net(data)
         loss = loss_function(output, target)
-
         test_loss += loss.data[0]
         prediction = torch.max(output.data, 1)
         total += target.size(0)
@@ -134,3 +143,4 @@ for epoch in range(0, EPOCH):
     print("\n\n epoch : %d/200" % (epoch + 1))
     print(train())
     print(test())
+    break

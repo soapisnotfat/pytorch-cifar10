@@ -15,8 +15,8 @@ def compute_mean_and_std(dataset):
     print('* Computing mean and std *')
     for inputs, targets in data_loader:
         for i in range(3):
-            mean[i] += inputs[:,i,:,:].mean()
-            std[i] += inputs[:,i,:,:].std()
+            mean[i] += inputs[:, i, :, :].mean()
+            std[i] += inputs[:, i, :, :].std()
     mean.div_(len(dataset))
     std.div_(len(dataset))
     return mean, std
@@ -42,14 +42,13 @@ _, term_width = os.popen('stty size', 'r').read().split()
 term_width = int(term_width)
 
 
-TOTAL_BAR_LENGTH = 65
+TOTAL_BAR_LENGTH = 80
 LAST_T = time.time()
 BEGIN_T = LAST_T
 
 
 def progress_bar(current, total, msg=None):
     global LAST_T, BEGIN_T
-    sys.stdout.flush()
     if current == 0:
         BEGIN_T = time.time()  # Reset for new bar.
 
@@ -69,13 +68,12 @@ def progress_bar(current, total, msg=None):
     LAST_T = current_time
     total_time = current_time - BEGIN_T
 
-    L = []
-    L.append('  Step: %s' % format_time(step_time))
-    L.append(' | Tot: %s' % format_time(total_time))
+    time_used = '  Step: %s' % format_time(step_time)
+    time_used += ' | Tot: %s' % format_time(total_time)
     if msg:
-        L.append(' | ' + msg)
+        time_used += ' | ' + msg
 
-    msg = ''.join(L)
+    msg = time_used
     sys.stdout.write(msg)
     for i in range(term_width - int(TOTAL_BAR_LENGTH) - len(msg)-3):
         sys.stdout.write(' ')
@@ -89,6 +87,7 @@ def progress_bar(current, total, msg=None):
         sys.stdout.write('\r')
     else:
         sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 # return the formatted time

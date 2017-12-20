@@ -2,7 +2,7 @@
 Personal practice on CIFAR10 with PyTorch <br>
 Inspired by [pytorch-cifar](https://github.com/kuangliu/pytorch-cifar) by [kuangliu](https://github.com/kuangliu). 
 
-### Introduction
+## Introduction
 The CIFAR-10 dataset consists of 60000 32x32 colour images in 10 classes, with 6000 images per class. 
 There are 50000 training images and 10000 test images. 
 
@@ -11,11 +11,23 @@ The test batch contains exactly 1000 randomly-selected images from each class.
 The training batches contain the remaining images in random order, but some training batches may contain more images from one class than another. 
 Between them, the training batches contain exactly 5000 images from each class. 
 
-### Configs
+## Configs
 __200__ epochs for each run-through, <br>
 __500__ batches for each training epoch, <br>
 __100__ batches for each validating epoch, <br>
 __100__ images for each training and validating batch
 
-### Result
-TBD
+##### Learning Rate
+__1e-3__ for [1,74] epochs <br>
+__5e-4__ for [75,149] epochs <br>
+__2.5e-4__ for [150,200) epochs <br>
+
+## Result
+Models | Accuracy
+:---:|:---:
+[Alexnet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/AlexNet.py) | TBD
+[VGG11](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | 87.48%
+[VGG13](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py)  | TBD
+[VGG16](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD
+[VGG19](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD
+[ResNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/ResNet.py) | TBD
