@@ -48,6 +48,8 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=BATCH
 # Prepare model
 # ===========================================================
 print("***** prepare model *****\n")
+# Net = LeNet()
+
 # Net = AlexNet()
 
 # Net = VGG('VGG11')
@@ -55,11 +57,17 @@ print("***** prepare model *****\n")
 # Net = VGG('VGG16')
 # Net = VGG('VGG19')
 
-Net = resnet18()
+# Net = resnet18()
 # Net = resnet34()
 # Net = resnet50()
 # Net = resnet101()
 # Net = resnet152()
+
+# Net = DenseNet121()
+# Net = DenseNet161()
+# Net = DenseNet169()
+Net = DenseNet201()
+
 
 if GPU_IN_USE:
     Net.cuda()
