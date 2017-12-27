@@ -66,8 +66,9 @@ print("***** prepare model *****\n")
 # Net = DenseNet121()
 # Net = DenseNet161()
 # Net = DenseNet169()
-Net = DenseNet201()
+# Net = DenseNet201()
 
+Net = GoogLeNet()
 
 if GPU_IN_USE:
     Net.cuda()
