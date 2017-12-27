@@ -52,10 +52,10 @@ print("***** prepare model *****\n")
 
 # Net = AlexNet()
 
-# Net = VGG('VGG11')
-# Net = VGG('VGG13')
-# Net = VGG('VGG16')
-# Net = VGG('VGG19')
+# Net = VGG11()
+# Net = VGG13()
+# Net = VGG16()
+# Net = VGG19()
 
 # Net = resnet18()
 # Net = resnet34()
