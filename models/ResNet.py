@@ -2,19 +2,6 @@ import torch.nn as nn
 import math
 
 
-__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
-           'resnet152']
-
-
-model_urls = {
-    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
-    'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
-    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
-    'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
-    'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
-}
-
-
 def conv3x3(in_planes, out_planes, stride=1):
     # 3x3 convolution with padding
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
@@ -36,20 +23,20 @@ class BasicBlock(nn.Module):
     def forward(self, x):
         residual = x
 
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
 
-        out = self.conv2(out)
-        out = self.bn2(out)
+        x = self.conv2(x)
+        x = self.bn2(x)
 
         if self.downsample is not None:
             residual = self.downsample(x)
 
-        out += residual
-        out = self.relu(out)
+        x += residual
+        x = self.relu(x)
 
-        return out
+        return x
 
 
 class Bottleneck(nn.Module):
@@ -70,24 +57,24 @@ class Bottleneck(nn.Module):
     def forward(self, x):
         residual = x
 
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
 
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
+        x = self.conv2(x)
+        x = self.bn2(x)
+        x = self.relu(x)
 
-        out = self.conv3(out)
-        out = self.bn3(out)
+        x = self.conv3(x)
+        x = self.bn3(x)
 
         if self.downsample is not None:
             residual = self.downsample(x)
 
-        out += residual
-        out = self.relu(out)
+        x += residual
+        x = self.relu(x)
 
-        return out
+        return x
 
 
 class ResNet(nn.Module):
