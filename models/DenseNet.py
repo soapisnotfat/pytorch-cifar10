@@ -72,15 +72,15 @@ class DenseNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        out = self.conv1(x)
-        out = self.trans1(self.dense1(out))
-        out = self.trans2(self.dense2(out))
-        out = self.trans3(self.dense3(out))
-        out = self.dense4(out)
-        out = func.avg_pool2d(func.relu(self.bn(out)), 4)
-        out = out.view(out.size(0), -1)
-        out = self.linear(out)
-        return out
+        x = self.conv1(x)
+        x = self.trans1(self.dense1(x))
+        x = self.trans2(self.dense2(x))
+        x = self.trans3(self.dense3(x))
+        x = self.dense4(x)
+        x = func.avg_pool2d(func.relu(self.bn(x)), 4)
+        x = x.view(x.size(0), -1)
+        x = self.linear(x)
+        return x
 
 
 def DenseNet121():

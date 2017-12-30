@@ -3,12 +3,12 @@ import torch.nn as nn
 
 
 class Inception(nn.Module):
-    def __init__(self, in_planes, kernel_1_out, kernel_3_in, kernel_3_out, kernel_5_in, kernel_5_out, pool_planes):
+    def __init__(self, in_planes, kernel_1_x, kernel_3_in, kernel_3_x, kernel_5_in, kernel_5_x, pool_planes):
         super(Inception, self).__init__()
         # 1x1 conv branch
         self.b1 = nn.Sequential(
-            nn.Conv2d(in_planes, kernel_1_out, kernel_size=1),
-            nn.BatchNorm2d(kernel_1_out),
+            nn.Conv2d(in_planes, kernel_1_x, kernel_size=1),
+            nn.BatchNorm2d(kernel_1_x),
             nn.ReLU(True),
         )
 
@@ -17,8 +17,8 @@ class Inception(nn.Module):
             nn.Conv2d(in_planes, kernel_3_in, kernel_size=1),
             nn.BatchNorm2d(kernel_3_in),
             nn.ReLU(True),
-            nn.Conv2d(kernel_3_in, kernel_3_out, kernel_size=3, padding=1),
-            nn.BatchNorm2d(kernel_3_out),
+            nn.Conv2d(kernel_3_in, kernel_3_x, kernel_size=3, padding=1),
+            nn.BatchNorm2d(kernel_3_x),
             nn.ReLU(True),
         )
 
@@ -27,11 +27,11 @@ class Inception(nn.Module):
             nn.Conv2d(in_planes, kernel_5_in, kernel_size=1),
             nn.BatchNorm2d(kernel_5_in),
             nn.ReLU(True),
-            nn.Conv2d(kernel_5_in, kernel_5_out, kernel_size=3, padding=1),
-            nn.BatchNorm2d(kernel_5_out),
+            nn.Conv2d(kernel_5_in, kernel_5_x, kernel_size=3, padding=1),
+            nn.BatchNorm2d(kernel_5_x),
             nn.ReLU(True),
-            nn.Conv2d(kernel_5_out, kernel_5_out, kernel_size=3, padding=1),
-            nn.BatchNorm2d(kernel_5_out),
+            nn.Conv2d(kernel_5_x, kernel_5_x, kernel_size=3, padding=1),
+            nn.BatchNorm2d(kernel_5_x),
             nn.ReLU(True),
         )
 
@@ -78,19 +78,19 @@ class GoogLeNet(nn.Module):
         self.linear = nn.Linear(1024, 10)
 
     def forward(self, x):
-        out = self.pre_layers(x)
-        out = self.a3(out)
-        out = self.b3(out)
-        out = self.max_pool(out)
-        out = self.a4(out)
-        out = self.b4(out)
-        out = self.c4(out)
-        out = self.d4(out)
-        out = self.e4(out)
-        out = self.max_pool(out)
-        out = self.a5(out)
-        out = self.b5(out)
-        out = self.avgpool(out)
-        out = out.view(out.size(0), -1)
-        out = self.linear(out)
-        return out
+        x = self.pre_layers(x)
+        x = self.a3(x)
+        x = self.b3(x)
+        x = self.max_pool(x)
+        x = self.a4(x)
+        x = self.b4(x)
+        x = self.c4(x)
+        x = self.d4(x)
+        x = self.e4(x)
+        x = self.max_pool(x)
+        x = self.a5(x)
+        x = self.b5(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        x = self.linear(x)
+        return x
