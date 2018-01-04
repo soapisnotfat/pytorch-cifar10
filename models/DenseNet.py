@@ -1,5 +1,4 @@
 import math
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as func
@@ -14,9 +13,9 @@ class Bottleneck(nn.Module):
         self.conv2 = nn.Conv2d(4 * growth_rate, growth_rate, kernel_size=3, padding=1, bias=False)
 
     def forward(self, x):
-        x = self.conv1(func.relu(self.bn1(x)))
-        x = self.conv2(func.relu(self.bn2(x)))
-        x = torch.cat([x, x], 1)
+        y = self.conv1(func.relu(self.bn1(x)))
+        y = self.conv2(func.relu(self.bn2(y)))
+        x = torch.cat([y, x], 1)
         return x
 
 
@@ -37,7 +36,7 @@ class DenseNet(nn.Module):
         super(DenseNet, self).__init__()
         self.growth_rate = growth_rate
 
-        num_planes = 2*growth_rate
+        num_planes = 2 * growth_rate
         self.conv1 = nn.Conv2d(3, num_planes, kernel_size=3, padding=1, bias=False)
 
         self.dense1 = self._make_dense_layers(block, num_planes, num_block[0])

@@ -1,6 +1,6 @@
-import torch
 import torch.optim as optim
 from torch.autograd import Variable
+import torch.utils.data
 import torch.backends.cudnn as cudnn
 import torchvision
 from torchvision import transforms as transforms
@@ -23,34 +23,35 @@ CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # ===========================================================
 # parser initialization
 # ===========================================================
-parser = argparse.ArgumentParser(description="cifar-10 practice")
+parser = argparse.ArgumentParser(description="cifar-10 with PyTorch")
 parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
-parser.add_argument('--epoch', default=EPOCH, type=int)
+parser.add_argument('--epoch', default=EPOCH, type=int, help='number of epochs tp train for')
+parser.add_argument('--trainBatchSize', default=BATCH_SIZE, type=int, help='training batch size')
+parser.add_argument('--testBatchSize', default=BATCH_SIZE, type=int, help='testing batch size')
 args = parser.parse_args()
 
 train_transform = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.ToTensor()])  # dataset training transform
-
 test_transform = transforms.Compose([transforms.ToTensor()])  # dataset testing transform
 
 
 # ===========================================================
 # Prepare train dataset & test dataset
 # ===========================================================
-print("***** prepare data ******\n")
+print("***** prepare data ******")
 train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=train_transform)
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=args.trainBatchSize, shuffle=True)
 
 test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=test_transform)
-test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=BATCH_SIZE, shuffle=False)
-
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=args.testBatchSize, shuffle=False)
+print("data preparation......Finished")
 
 # ===========================================================
 # Prepare model
 # ===========================================================
-print("***** prepare model *****\n")
+print("\n***** prepare model *****")
 # Net = LeNet()
 
-# Net = AlexNet()
+Net = AlexNet()
 
 # Net = VGG11()
 # Net = VGG13()
@@ -63,7 +64,7 @@ print("***** prepare model *****\n")
 # Net = resnet101()
 # Net = resnet152()
 
-Net = DenseNet121()
+# Net = DenseNet121()
 # Net = DenseNet161()
 # Net = DenseNet169()
 # Net = DenseNet201()
@@ -77,6 +78,7 @@ if GPU_IN_USE:
 optimizer = optim.Adam(Net.parameters(), lr=args.lr)  # Adam optimization
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[75, 150], gamma=0.5)  # lr decay
 loss_function = nn.CrossEntropyLoss()
+print("model preparation......Finished")
 
 
 # Train
@@ -104,8 +106,7 @@ def train():
         loss.backward()
         optimizer.step()
         train_loss += loss.data[0]
-        # TODO: introduce torch.max in blog
-        prediction = torch.max(output.data, 1)  # second param "1" represents the dimension to reduce
+        prediction = torch.max(output.data, 1)  # second param "1" represents the dimension to be reduced
         total += target.size(0)
         train_correct += prediction[1].eq(target.data).cpu().sum()  # train_correct incremented by one if predicted right
 
@@ -124,7 +125,7 @@ def train():
 #              [torch.cuda.LongTensor of size 100 (GPU 0)]]
 # ===========================================================
 def test():
-    print("\n****** begin test *******")
+    print("****** begin test *******")
     Net.eval()
     test_loss = 0
     test_correct = 0
@@ -147,9 +148,23 @@ def test():
     return test_loss, test_correct / total
 
 
-for epoch in range(0, EPOCH):
-    scheduler.step()
-    print("\n\n epoch : %d/200" % (epoch + 1))
+# ===========================================================
+# Save model
+# ===========================================================
+def save():
+    model_out_path = "model.pth"
+    torch.save(Net, model_out_path)
+    print("Checkpoint saved to {}".format(model_out_path))
+
+
+# ===========================================================
+# training and save model
+# ===========================================================
+for epoch in range(1, EPOCH + 1):
+    scheduler.step(epoch)
+    print("\n===> epoch : %d/200" % epoch)
     print(train())
     print(test())
+    if epoch == EPOCH:
+        save()
     break

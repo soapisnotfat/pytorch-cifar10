@@ -11,6 +11,16 @@ The test batch contains exactly 1000 randomly-selected images from each class.
 The training batches contain the remaining images in random order, but some training batches may contain more images from one class than another. 
 Between them, the training batches contain exactly 5000 images from each class. 
 
+## Usage
+```bash
+python3 main.py
+```
+optional arguments:
+
+    --lr                default=1e-3    learning rate
+    --epoch             default=200     number of epochs tp train for
+    --trainBatchSize    default=100     training batch size
+    --testBatchSize     default=100     test batch size
 ## Configs
 __200__ epochs for each run-through, <br>
 __500__ batches for each training epoch, <br>
@@ -31,3 +41,8 @@ Models | Accuracy
 [VGG16](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD
 [VGG19](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD
 [ResNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/ResNet.py) | TBD
+[GoogleNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/GoogleNet.py) | TBD
+[DenseNet121](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/DenseNet.py) | TBD
+[DenseNet161](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/DenseNet.py) | TBD
+[DenseNet169](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/DenseNet.py) | TBD
+[DenseNet201](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/DenseNet.py) | TBD
