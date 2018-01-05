@@ -51,12 +51,14 @@ print("data preparation......Finished")
 print("\n***** prepare model *****")
 # Net = LeNet()
 
-Net = AlexNet()
+# Net = AlexNet()
 
 # Net = VGG11()
 # Net = VGG13()
 # Net = VGG16()
 # Net = VGG19()
+
+Net = GoogLeNet()
 
 # Net = resnet18()
 # Net = resnet34()
@@ -68,8 +70,6 @@ Net = AlexNet()
 # Net = DenseNet161()
 # Net = DenseNet169()
 # Net = DenseNet201()
-
-# Net = GoogLeNet()
 
 if GPU_IN_USE:
     Net.cuda()
@@ -90,7 +90,8 @@ print("model preparation......Finished")
 #              [torch.cuda.LongTensor of size 100 (GPU 0)]]
 # ===========================================================
 def train():
-    print("***** begin train  ******")
+    print("****** train ******"
+          "")
     Net.train()
     train_loss = 0
     train_correct = 0
@@ -110,7 +111,7 @@ def train():
         total += target.size(0)
         train_correct += prediction[1].eq(target.data).cpu().sum()  # train_correct incremented by one if predicted right
 
-        progress_bar(batch_num, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        progress_bar(batch_num, len(train_loader), 'Loss: %.4f | Acc: %.3f%% (%d/%d)'
                      % (train_loss / (batch_num + 1), 100. * train_correct / total, train_correct, total))
 
     return train_loss, train_correct / total
@@ -125,7 +126,7 @@ def train():
 #              [torch.cuda.LongTensor of size 100 (GPU 0)]]
 # ===========================================================
 def test():
-    print("****** begin test *******")
+    print("****** test *******")
     Net.eval()
     test_loss = 0
     test_correct = 0
@@ -142,8 +143,8 @@ def test():
         total += target.size(0)
         test_correct += prediction[1].eq(target.data).cpu().sum()
 
-        progress_bar(batch_num, len(test_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                     % (test_correct / (batch_num + 1), 100. * test_correct / total, test_correct, total))
+        progress_bar(batch_num, len(test_loader), 'Loss: %.4f | Acc: %.3f%% (%d/%d)'
+                     % (test_loss / (batch_num + 1), 100. * test_correct / total, test_correct, total))
 
     return test_loss, test_correct / total
 
@@ -160,11 +161,13 @@ def save():
 # ===========================================================
 # training and save model
 # ===========================================================
-for epoch in range(1, EPOCH + 1):
+for epoch in range(1, args.epoch + 1):
     scheduler.step(epoch)
-    print("\n===> epoch : %d/200" % epoch)
-    print(train())
-    print(test())
-    if epoch == EPOCH:
+    print("\n===> epoch: %d/200" % epoch)
+    train_result = train()
+    print(train_result)
+    test_result = test()
+    ACCURACY = max(ACCURACY, test_result[1])
+    if epoch == args.epoch:
+        print("===> BEST ACC. PERFORMANCE: %.3f%%" % (ACCURACY * 100))
         save()
-    break
