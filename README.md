@@ -41,7 +41,7 @@ Models | Accuracy | Comments
 [VGG13](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py)  | 90.17% | - - - -
 [VGG16](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD | - - - -
 [VGG19](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | TBD | - - - -
-[GoogleNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/GoogleNet.py) | TBD | - - - -
+[GoogleNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/GoogleNet.py) | 92.57% | - - - -
 [ResNet18](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/ResNet.py) | TBD | - - - -
 [ResNet34](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/ResNet.py) | TBD | - - - -
 [ResNet50](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/ResNet.py) | TBD | - - - -

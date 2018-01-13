@@ -51,14 +51,14 @@ print("data preparation......Finished")
 print("\n***** prepare model *****")
 # Net = LeNet()
 
-# Net = AlexNet()
+Net = AlexNet()
 
 # Net = VGG11()
 # Net = VGG13()
 # Net = VGG16()
 # Net = VGG19()
 
-Net = GoogLeNet()
+# Net = GoogLeNet()
 
 # Net = resnet18()
 # Net = resnet34()
@@ -90,8 +90,7 @@ print("model preparation......Finished")
 #              [torch.cuda.LongTensor of size 100 (GPU 0)]]
 # ===========================================================
 def train():
-    print("****** train ******"
-          "")
+    print("train:")
     Net.train()
     train_loss = 0
     train_correct = 0
@@ -126,7 +125,7 @@ def train():
 #              [torch.cuda.LongTensor of size 100 (GPU 0)]]
 # ===========================================================
 def test():
-    print("****** test *******")
+    print("test:")
     Net.eval()
     test_loss = 0
     test_correct = 0
