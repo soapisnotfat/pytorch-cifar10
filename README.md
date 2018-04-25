@@ -12,8 +12,10 @@ The training batches contain the remaining images in random order, but some trai
 Between them, the training batches contain exactly 5000 images from each class. 
 
 ## Requirement
-python3.6
-pytorch 0.4.0
+- python3.6
+- numpy
+- pytorch 0.4.0
+- torchvision 0.2.0
 
 ## Usage
 ```bash
