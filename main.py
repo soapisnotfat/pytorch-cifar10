@@ -1,14 +1,15 @@
 import torch.optim as optim
-from torch.autograd import Variable
 import torch.utils.data
 import torch.backends.cudnn as cudnn
 import torchvision
 from torchvision import transforms as transforms
+import numpy as np
 
 import argparse
 
 from models import *
-from utils import progress_bar
+from misc import progress_bar
+
 
 # ===========================================================
 # Global variables
@@ -48,32 +49,34 @@ print("data preparation......Finished")
 # ===========================================================
 # Prepare model
 # ===========================================================
-print("\n***** prepare model *****")
-# Net = LeNet()
-
-Net = AlexNet()
-
-# Net = VGG11()
-# Net = VGG13()
-# Net = VGG16()
-# Net = VGG19()
-
-# Net = GoogLeNet()
-
-# Net = resnet18()
-# Net = resnet34()
-# Net = resnet50()
-# Net = resnet101()
-# Net = resnet152()
-
-# Net = DenseNet121()
-# Net = DenseNet161()
-# Net = DenseNet169()
-# Net = DenseNet201()
-
 if GPU_IN_USE:
-    Net.cuda()
+    device = torch.device('cuda')
     cudnn.benchmark = True
+else:
+    device = torch.device('cpu')
+
+print("\n***** prepare model *****")
+# Net = LeNet().to(device)
+
+Net = AlexNet().to(device)
+
+# Net = VGG11().to(device)
+# Net = VGG13().to(device)
+# Net = VGG16().to(device)
+# Net = VGG19().to(device)
+
+# Net = GoogLeNet().to(device)
+
+# Net = resnet18().to(device)
+# Net = resnet34().to(device)
+# Net = resnet50().to(device)
+# Net = resnet101().to(device)
+# Net = resnet152().to(device)
+
+# Net = DenseNet121().to(device)
+# Net = DenseNet161().to(device)
+# Net = DenseNet169().to(device)
+# Net = DenseNet201().to(device)
 
 optimizer = optim.Adam(Net.parameters(), lr=args.lr)  # Adam optimization
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[75, 150], gamma=0.5)  # lr decay
@@ -97,18 +100,18 @@ def train():
     total = 0
 
     for batch_num, (data, target) in enumerate(train_loader):
-        if GPU_IN_USE:
-            data, target = data.cuda(), target.cuda()
-        data, target = Variable(data), Variable(target)  # set up GPU Tensor
+        data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         output = Net(data)
         loss = loss_function(output, target)
         loss.backward()
         optimizer.step()
-        train_loss += loss.data[0]
-        prediction = torch.max(output.data, 1)  # second param "1" represents the dimension to be reduced
+        train_loss += loss.item()
+        prediction = torch.max(output, 1)  # second param "1" represents the dimension to be reduced
         total += target.size(0)
-        train_correct += prediction[1].eq(target.data).cpu().sum()  # train_correct incremented by one if predicted right
+
+        # train_correct incremented by one if predicted right
+        train_correct += np.sum(prediction[1].cpu().numpy() == target.cpu().numpy())
 
         progress_bar(batch_num, len(train_loader), 'Loss: %.4f | Acc: %.3f%% (%d/%d)'
                      % (train_loss / (batch_num + 1), 100. * train_correct / total, train_correct, total))
@@ -131,19 +134,18 @@ def test():
     test_correct = 0
     total = 0
 
-    for batch_num, (data, target) in enumerate(test_loader):
-        if GPU_IN_USE:
-            data, target = data.cuda(), target.cuda()
-        data, target = Variable(data, volatile=True), Variable(target)  # set up GPU Tensor
-        output = Net(data)
-        loss = loss_function(output, target)
-        test_loss += loss.data[0]
-        prediction = torch.max(output.data, 1)
-        total += target.size(0)
-        test_correct += prediction[1].eq(target.data).cpu().sum()
+    with torch.no_grad():
+        for batch_num, (data, target) in enumerate(test_loader):
+            data, target = data.to(device), target.to(device)
+            output = Net(data)
+            loss = loss_function(output, target)
+            test_loss += loss.item()
+            prediction = torch.max(output, 1)
+            total += target.size(0)
+            test_correct += np.sum(prediction[1].cpu().numpy() == target.cpu().numpy())
 
-        progress_bar(batch_num, len(test_loader), 'Loss: %.4f | Acc: %.3f%% (%d/%d)'
-                     % (test_loss / (batch_num + 1), 100. * test_correct / total, test_correct, total))
+            progress_bar(batch_num, len(test_loader), 'Loss: %.4f | Acc: %.3f%% (%d/%d)'
+                         % (test_loss / (batch_num + 1), 100. * test_correct / total, test_correct, total))
 
     return test_loss, test_correct / total
 
