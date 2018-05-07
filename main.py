@@ -58,7 +58,7 @@ else:
 print("\n***** prepare model *****")
 # Net = LeNet().to(device)
 
-Net = AlexNet().to(device)
+# Net = AlexNet().to(device)
 
 # Net = VGG11().to(device)
 # Net = VGG13().to(device)
@@ -77,6 +77,8 @@ Net = AlexNet().to(device)
 # Net = DenseNet161().to(device)
 # Net = DenseNet169().to(device)
 # Net = DenseNet201().to(device)
+
+Net = WideResNet(depth=28, num_classes=10).to(device)
 
 optimizer = optim.Adam(Net.parameters(), lr=args.lr)  # Adam optimization
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[75, 150], gamma=0.5)  # lr decay
