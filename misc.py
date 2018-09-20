@@ -45,7 +45,6 @@ def progress_bar(current, total, msg=None):
     sys.stdout.flush()
 
 
-# return the formatted time
 def format_time(seconds):
     days = int(seconds / 3600/24)
     seconds = seconds - days*3600*24
